@@ -1,10 +1,10 @@
-﻿import os
+import os
 import sys
 import streamlit as st
 import logging
 from dotenv import load_dotenv
 import tempfile
-import speech_recognition as sr
+
 
 # --------------------------- Setup --------------------------- #
 print("🧠 Streamlit using Python:", sys.executable)
@@ -229,18 +229,7 @@ def chat_page():
         mic_pressed = st.button("🎤", key="mic_btn", help="Speak now", use_container_width=True)
 
     # Voice Input
-    if mic_pressed:
-        recognizer = sr.Recognizer()
-        with st.spinner("🎧 Listening..."):
-            try:
-                with sr.Microphone() as source:
-                    recognizer.adjust_for_ambient_noise(source, duration=0.5)
-                    audio = recognizer.listen(source, timeout=5, phrase_time_limit=10)
-                    voice_text = recognizer.recognize_google(audio)
-                    st.session_state.messages.append({"role": "user", "content": voice_text})
-                    st.success(f"🗣️ You said: {voice_text}")
-            except Exception as e:
-                st.error(f"Voice error: {e}")
+
 
     # Handle text input
     if prompt:
