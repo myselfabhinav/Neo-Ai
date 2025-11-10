@@ -5,13 +5,13 @@ import logging
 from dotenv import load_dotenv
 import tempfile
 
-
 # --------------------------- Setup --------------------------- #
 print("🧠 Streamlit using Python:", sys.executable)
 
 env_path = os.path.join(os.path.dirname(__file__), ".env")
 if os.path.exists(env_path):
     load_dotenv(dotenv_path=env_path, override=True)
+    print("✅ .env loaded successfully")
 else:
     print("⚠️ .env file not found!")
 
@@ -27,14 +27,21 @@ try:
     )
     from utils.web_search import get_web_results_text
     from utils.helpers import format_response
-    from langchain_community.document_loaders import PyPDFLoader
-    from langchain_text_splitters import RecursiveCharacterTextSplitter
-    from langchain_community.vectorstores import FAISS
-except Exception:
+except Exception as e:
+    print(f"⚠️ Custom modules failed to import: {e}")
     def get_openai_model(): return "openai-fallback"
     def get_gemini_model(): return "gemini-fallback"
     def invoke_model(**kwargs): return "Mock AI reply."
     def get_free_embeddings(): raise RuntimeError("Embeddings unavailable")
+
+# ---------------- Debug / Test LangChain Imports ---------------- #
+try:
+    from langchain_community.document_loaders import PyPDFLoader
+    from langchain_community.vectorstores import FAISS
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
+    print("✅ LangChain community modules loaded successfully.")
+except ImportError as e:
+    print(f"❌ LangChain community modules failed to load: {e}")
 
 # --------------------------- Logging --------------------------- #
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - [%(levelname)s] - %(message)s")
@@ -151,76 +158,6 @@ def chat_page():
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
 
-    # ---------------- Fixed Input Bar ----------------
-    st.markdown("""
-    <style>
-    /* ---- Background animation ---- */
-    [data-testid="stAppViewContainer"]::before {
-        content: "";
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1e3c72);
-        background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
-        z-index: -1;
-    }
-    @keyframes gradientBG {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    .model-status {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: rgba(0,255,255,0.1);
-        padding: 10px;
-        border-radius: 10px;
-        margin-top: 10px;
-        box-shadow: 0 0 15px rgba(0,255,255,0.3);
-    }
-    .pulse {
-        width: 15px;
-        height: 15px;
-        border-radius: 50%;
-        background: #00e0ff;
-        box-shadow: 0 0 15px #00e0ff;
-        animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-        0% { transform: scale(0.9); opacity: 0.7; }
-        50% { transform: scale(1.2); opacity: 1; }
-        100% { transform: scale(0.9); opacity: 0.7; }
-    }
-    .ready-text {
-        color: #00e0ff;
-        font-weight: bold;
-    }
-
-    .header-glow h1 {
-        text-align: center;
-        color: #fff;
-        text-shadow: 0 0 20px #00e0ff;
-    }
-    .header-glow p {
-        text-align: center;
-        color: #bbb;
-    }
-
-    div[data-testid="stBottomBlockContainer"] {
-        position: fixed !important;
-        bottom: 0;
-        width: 100%;
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(12px);
-        padding: 0.7rem 1rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        z-index: 1000;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
     # Chat input row
     col1, col2 = st.columns([10, 1])
     with col1:
@@ -228,10 +165,6 @@ def chat_page():
     with col2:
         mic_pressed = st.button("🎤", key="mic_btn", help="Speak now", use_container_width=True)
 
-    # Voice Input
-
-
-    # Handle text input
     if prompt:
         st.session_state.messages.append({"role": "user", "content": prompt})
 
