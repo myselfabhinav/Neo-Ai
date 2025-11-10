@@ -1,12 +1,21 @@
+# Streamlit and UI
 streamlit==1.39.0
 streamlit-chat==0.1.1
+
+# AI/LLM
 openai==1.47.0
 gtts==2.5.1
-SpeechRecognition==3.10.4
+langchain==0.1.240
+langchain-community==0.0.202
+
+# Web search
 duckduckgo-search==6.1.5
-python-dotenv==1.0.1
 requests==2.31.0
-groq==0.11.0
-# PyAudio is not supported on Streamlit Cloud, use this instead:
-sounddevice==0.4.6
+python-dotenv==1.0.1
+
+# Data & ML
 numpy==1.26.4
+faiss-cpu==1.7.4
+
+# PDF and text processing
+PyPDF2==3.0.1
