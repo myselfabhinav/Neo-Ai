@@ -1,0 +1,12 @@
+streamlit==1.39.0
+streamlit-chat==0.1.1
+openai==1.47.0
+gtts==2.5.1
+SpeechRecognition==3.10.4
+duckduckgo-search==6.1.5
+python-dotenv==1.0.1
+requests==2.31.0
+groq==0.11.0
+# PyAudio is not supported on Streamlit Cloud, use this instead:
+sounddevice==0.4.6
+numpy==1.26.4
