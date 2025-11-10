@@ -1,25 +1,27 @@
-# Streamlit and UI
+# --- Streamlit and UI ---
 streamlit==1.39.0
 streamlit-chat==0.1.1
 
-# AI/LLM
+# --- Core AI / LLM ---
 openai==1.47.0
 gtts==2.5.1
-langchain>=0.1.260
+langchain>=0.2.10
+langchain-community>=0.2.10
+langchain-openai>=0.1.8
+langchain-groq>=0.1.4
+langchain-google-genai>=0.1.6
+langchain-huggingface>=0.1.2
 
+# --- Embeddings & Transformers ---
+sentence-transformers>=2.7.0
+torch>=2.1.0
+numpy==1.26.4
+faiss-cpu==1.12.0
 
-# Web search
+# --- Web search & utilities ---
 duckduckgo-search==6.1.5
 requests==2.31.0
 python-dotenv==1.0.1
 
-# Data & ML
-numpy==1.26.4
-faiss-cpu==1.12.0
-
-
-# PDF and text processing
+# --- PDF and text processing ---
 PyPDF2==3.0.1
-
-
-
