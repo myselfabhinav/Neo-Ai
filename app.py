@@ -158,8 +158,7 @@ def chat_page():
     col1, col2 = st.columns([10, 1])
     with col1:
         prompt = st.chat_input("💬 Type your message here...")
-    with col2:
-        mic_pressed = st.button("🎤", key="mic_btn", help="Speak now", use_container_width=True)
+   
 
     if prompt:
         st.session_state.messages.append({"role": "user", "content": prompt})
