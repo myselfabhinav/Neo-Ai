@@ -5,8 +5,7 @@ streamlit-chat==0.1.1
 # AI/LLM
 openai==1.47.0
 gtts==2.5.1
-langchain==0.1.240
-langchain-community==0.0.202
+langchain>=0.1.0,<1.0.0
 
 # Web search
 duckduckgo-search==6.1.5
@@ -19,3 +18,4 @@ faiss-cpu==1.7.4
 
 # PDF and text processing
 PyPDF2==3.0.1
+
