@@ -34,14 +34,13 @@ except Exception as e:
     def invoke_model(**kwargs): return "Mock AI reply."
     def get_free_embeddings(): raise RuntimeError("Embeddings unavailable")
 
-# ---------------- Debug / Test LangChain Imports ---------------- #
 try:
     from langchain_community.document_loaders import PyPDFLoader
     from langchain_community.vectorstores import FAISS
     from langchain_text_splitters import RecursiveCharacterTextSplitter
-    print("✅ LangChain community modules loaded successfully.")
+    print("✅ LangChain modules loaded successfully.")
 except ImportError as e:
-    print(f"❌ LangChain community modules failed to load: {e}")
+    print(f"❌ LangChain modules failed: {e}")
 
 # --------------------------- Logging --------------------------- #
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - [%(levelname)s] - %(message)s")
@@ -80,17 +79,17 @@ def get_chat_response(provider, chat_model, messages, system_prompt, response_mo
     except Exception as e:
         return f"⚠️ Error while generating response: {e}"
 
-# --------------------------- Pages --------------------------- #
+# --------------------------- Instructions Page --------------------------- #
 def instructions_page():
     st.markdown("""
-    <div class="fade-in">
-    <h1>📘 AI ChatBot Setup Guide</h1>
-    <p>Welcome to your <b>NeoStats AI Assistant</b>! Here's what you can do:</p>
+    <div class="fade-in glass-box">
+    <h1>📘 Welcome to NeoStats AI Assistant</h1>
+    <p>Here's what you can do:</p>
     <ul>
-        <li>🧠 Talk with Gemini or OpenAI models</li>
-        <li>🎙️ Use live voice input</li>
-        <li>📚 Upload PDFs for smart context (RAG)</li>
-        <li>🌐 Enable Web Search mode</li>
+        <li>🧠 Chat with <b>Gemini</b> or <b>OpenAI</b> models</li>
+        <li>🎙️ Use <b>voice input</b> for hands-free interaction</li>
+        <li>📚 Upload <b>PDFs</b> for knowledge-augmented replies</li>
+        <li>🌐 Enable <b>Web Search</b> mode for live results</li>
     </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -100,7 +99,7 @@ def chat_page():
     st.markdown("""
     <div class="header-glow">
         <h1>🤖 NeoStats AI ChatBot</h1>
-        <p>Ask anything — powered by advanced AI engines</p>
+        <p>Ask anything — powered by advanced AI models</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -113,10 +112,7 @@ def chat_page():
         enable_web_only = st.checkbox("Enable Web Search Only")
 
         try:
-            chat_model = {
-                "Gemini": get_gemini_model,
-                "OpenAI": get_openai_model
-            }[provider]()
+            chat_model = {"Gemini": get_gemini_model, "OpenAI": get_openai_model}[provider]()
             st.markdown(
                 f"""
                 <div class="model-status">
@@ -158,7 +154,7 @@ def chat_page():
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
 
-    # Chat input row
+    # Chat input
     col1, col2 = st.columns([10, 1])
     with col1:
         prompt = st.chat_input("💬 Type your message here...")
@@ -168,14 +164,10 @@ def chat_page():
     if prompt:
         st.session_state.messages.append({"role": "user", "content": prompt})
 
-    # Generate AI response
     if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
         with chat_placeholder.chat_message("assistant"):
             with st.spinner("🤔 Thinking..."):
-                response = get_chat_response(
-                    provider, chat_model, st.session_state.messages,
-                    "", response_mode, enable_rag, enable_web_only
-                )
+                response = get_chat_response(provider, chat_model, st.session_state.messages, "", response_mode, enable_rag, enable_web_only)
                 st.markdown(response)
                 st.session_state.messages.append({"role": "assistant", "content": response})
 
@@ -188,7 +180,81 @@ def chat_page():
 
 # --------------------------- Main --------------------------- #
 def main():
-    st.set_page_config(page_title="AI ChatBot ✨", layout="wide", page_icon="🤖")
+    st.set_page_config(page_title="NeoStats AI ✨", layout="wide", page_icon="🤖")
+
+    # 🚫 Hide deploy and Streamlit menu items
+    st.markdown("""
+        <style>
+        [data-testid="stMainMenu"] {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        </style>
+    """, unsafe_allow_html=True)
+
+    # 🌌 Global CSS Styling
+    st.markdown("""
+    <style>
+    body {
+        background: radial-gradient(circle at 20% 20%, #0f2027, #203a43, #2c5364);
+        color: #fff;
+    }
+    .header-glow h1 {
+        text-align: center;
+        color: #00e0ff;
+        text-shadow: 0 0 20px #00e0ff;
+        font-size: 3rem;
+    }
+    .header-glow p {
+        text-align: center;
+        color: #b0c4de;
+        font-size: 1.2rem;
+    }
+    .model-status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(0,255,255,0.1);
+        padding: 10px;
+        border-radius: 12px;
+        margin-top: 10px;
+        box-shadow: 0 0 15px rgba(0,255,255,0.3);
+    }
+    .pulse {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #00e0ff;
+        box-shadow: 0 0 15px #00e0ff;
+        animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+        0% { transform: scale(0.9); opacity: 0.7; }
+        50% { transform: scale(1.2); opacity: 1; }
+        100% { transform: scale(0.9); opacity: 0.7; }
+    }
+    .ready-text { color: #00e0ff; font-weight: bold; }
+
+    .glass-box {
+        background: rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: 0 0 25px rgba(0,255,255,0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    div[data-testid="stBottomBlockContainer"] {
+        position: fixed !important;
+        bottom: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(15px);
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 0.8rem 1rem;
+        z-index: 1000;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     with st.sidebar:
         st.markdown("<h1>📍 Navigation</h1>", unsafe_allow_html=True)
         page = st.radio("Go to:", ["Chat", "Instructions"])
